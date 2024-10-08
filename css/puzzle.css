@@ -1,0 +1,35 @@
+/* General layout for three columns */
+#puzzle-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px; /* Adjust the space between columns */
+    width: 100%;
+    height: 100vh; /* Full page height */
+}
+
+/* Common grid styling for all three columns */
+.grid {
+    display: grid;
+    border: 2px solid #333; /* Border around each grid */
+}
+
+/* Left and right columns: 3x10 grid */
+#left-column, #right-column {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+/* Middle column: 7x8 grid */
+#middle-column {
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+}
+
+/* Style each cell of the grid */
+.grid div {
+    border: 1px solid #000; /* Grid cell borders */
+    background-color: lightgray; /* Default background color */
+    width: 100%; 
+    height: 100%;
+    box-sizing: border-box; /* Ensures borders don't mess up sizing */
+}
