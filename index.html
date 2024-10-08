@@ -1,61 +1,44 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Austin Snyder</title>
-  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-  <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css" />
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="js/menu.js"></script>
-  <style>
-    .menu-index {
-      color: rgb(255, 255, 255) !important;
-      opacity: 1 !important;
-      font-weight: 700 !important;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Austin Snyder</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body>
-  <div class="menu-container"></div>
-  <div class="content-container">
-    <div class="content">
-      <div class="content-table flex-column">
-        <!-------------------------------------------------------------------------------------------->
-        <!--Start Intro-->
-        <div class="flex-row">
-          <div class="flex-item flex-column">
-            <img class="image" style="width: 430px; height: auto" src="img/headshot.jpg">
-          </div>
-          <div class="flex-item flex-column">
-            <p class="text text-large">
-              Hi! I'm Austin.<br>
-              <!--<a href="https://twitter.com/snyde_remark">Twitter</a><br>-->
-              <!--<a href="https://www.linkedin.com/in/austin-d-snyder/">LinkedIn</a><br>-->
-              <a href="https://github.com/austin-snyder/">Github</a><br>
-              <a href="src/resume.pdf">Resume</a><br>
-            </p>
-          </div>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#papers">Papers</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <section id="about">
+                <h1>A bit about me.</h1>
+                <div class="profile">
+                    <img src="img/dummyimagedummy.png" alt="Your Image">
+                    <div class="bio">
+                        <p>[INTRODUCTION SENTENCE]</p>
+                        <p>[EXPLANATION OF SITE PURPOSE]</p>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/austin-d-snyder/">LinkedIn</a>
+                    <a href="https://github.com/austin-snyder">GitHub</a>
+                </div>
+            </section>
         </div>
-        <div class="flex-row">
-          <div class="flex-item flex-column">
-            <p class="text add-top-margin">
-              TEST
-              I'm currently a senior at UNC-Chapel Hill studying Computer Science and Environmental Science.<br><br>
-              I will be graduating in a few months (May 2022), so I am looking for full-time job opportunities in
-              both the software engineering and renewable energy spheres. Check out some of the projects I've worked
-              on <a href='projects.html'>here</a>!
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
+    </main>
 
+    <footer>
+        <p>© 2024 Austin Snyder</p>
+    </footer>
+</body>
 </html>
