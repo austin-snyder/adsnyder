@@ -33,3 +33,9 @@
     height: 100%;
     box-sizing: border-box; /* Ensures borders don't mess up sizing */
 }
+
+/* Invisible class: no fill and no border */
+.invisible {
+    background-color: transparent;
+    border: none;
+}
