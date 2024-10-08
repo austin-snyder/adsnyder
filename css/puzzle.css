@@ -35,7 +35,7 @@
 }
 
 /* Invisible class: no fill and no border */
-.invisible {
-    background-color: transparent;
-    border: none;
+.grid .invisible {
+    background-color: transparent !important;
+    border: none !important;
 }
