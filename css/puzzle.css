@@ -10,7 +10,7 @@
 /* Common grid styling for all three columns */
 .grid {
     display: grid;
-    border: 2px solid #333; /* Border around each grid */
+    /*border: 2px solid #333;*/ /* Border around each grid */
 }
 
 /* Left and right columns: 3x10 grid */
@@ -25,6 +25,12 @@
     grid-template-rows: repeat(8, 1fr);
 }
 
+/* Invisible class: no fill and no border */
+.grid .invisible {
+    background-color: transparent !important;
+    border: none !important;
+}
+
 /* Style each cell of the grid */
 .grid div {
     border: 1px solid #000; /* Grid cell borders */
@@ -34,8 +40,3 @@
     box-sizing: border-box; /* Ensures borders don't mess up sizing */
 }
 
-/* Invisible class: no fill and no border */
-.grid .invisible {
-    background-color: transparent !important;
-    border: none !important;
-}
