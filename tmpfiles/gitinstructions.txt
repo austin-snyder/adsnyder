@@ -9,7 +9,7 @@ To pull updates subsequent times:
 
 # Make and Commit Changes to Separate Files and Merge into the Main Branch 
 Create a new branch for your changes:
-    `git checkout -b <branch-name>`
+    `git checkout -b <branch-name>` ("evan-branch" and "austin-branch" could work well)
 Make changes to the separate files in your branch.
 
 Stage and commit your changes:
