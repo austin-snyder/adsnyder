@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game of Life - Bin-Packed Grid</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #f4f4f4;
+    }
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const cols = 12; // Logical grid width
+    const rows = 12; // Logical grid height
+    const fadeSpeed = 0.01;
+    const minRegionSize = 2;
+    const maxRegionSize = 8;
+    const animationDelay = 50;
+
+    const colorPalette = ["#F6B845", "#F9B588"];
+
+    let grid, regions, cellSize;
+
+    function init() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      cellSize = Math.floor(canvas.width / cols); // Determine cell size
+      grid = generateInitialGrid();
+      regions = [];
+      generateRegions();
+    }
+
+    // Initialize Game of Life grid
+    function generateInitialGrid() {
+      return Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => Math.random() > 0.5 ? 1 : 0)
+      );
+    }
+
+    // Generate bin-packed regions
+    function generateRegions() {
+      const occupied = Array.from({ length: rows }, () => Array(cols).fill(false));
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (!occupied[y][x]) {
+            const maxWidth = Math.min(maxRegionSize, cols - x);
+            const maxHeight = Math.min(maxRegionSize, rows - y);
+
+            const width = Math.max(minRegionSize, Math.floor(Math.random() * (maxWidth - minRegionSize + 1)) + minRegionSize);
+            const height = Math.max(minRegionSize, Math.floor(Math.random() * (maxHeight - minRegionSize + 1)) + minRegionSize);
+
+            if (canPlaceRegion(occupied, x, y, width, height)) {
+              markOccupied(occupied, x, y, width, height);
+              regions.push({
+                x,
+                y,
+                width,
+                height,
+                opacity: 0,
+                color: getRandomColor(),
+              });
+            }
+          }
+        }
+      }
+    }
+
+    function canPlaceRegion(occupied, x, y, width, height) {
+      for (let i = y; i < y + height; i++) {
+        for (let j = x; j < x + width; j++) {
+          if (i >= rows || j >= cols || occupied[i][j]) return false;
+        }
+      }
+      return true;
+    }
+
+    function markOccupied(occupied, x, y, width, height) {
+      for (let i = y; i < y + height; i++) {
+        for (let j = x; j < x + width; j++) {
+          occupied[i][j] = true;
+        }
+      }
+    }
+
+    function getRandomColor() {
+      return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+    }
+
+    // Update Game of Life logic
+    function updateGrid() {
+      const nextGrid = grid.map((row, y) =>
+        row.map((cell, x) => {
+          const neighbors = countNeighbors(x, y);
+          if (cell === 1 && (neighbors < 2 || neighbors > 3)) return 0; // Dies
+          if (cell === 0 && neighbors === 3) return 1; // Becomes alive
+          return cell; // Stays the same
+        })
+      );
+      grid = nextGrid;
+    }
+
+    function countNeighbors(x, y) {
+      let sum = 0;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const row = (y + i + rows) % rows;
+          const col = (x + j + cols) % cols;
+          sum += grid[row][col];
+        }
+      }
+      sum -= grid[y][x];
+      return sum;
+    }
+
+    // Update regions' opacity based on alive cells
+    function updateRegions() {
+      regions.forEach(region => {
+        let aliveCount = 0;
+
+        for (let y = region.y; y < region.y + region.height; y++) {
+          for (let x = region.x; x < region.x + region.width; x++) {
+            if (grid[y] && grid[y][x]) aliveCount += grid[y][x];
+          }
+        }
+
+        const totalCells = region.width * region.height;
+        const targetOpacity = Math.min(1, aliveCount / (totalCells * 0.5)); // 30% alive = full opacity
+        region.opacity += (targetOpacity - region.opacity) * fadeSpeed;
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      regions.forEach(region => {
+        ctx.fillStyle = region.color;
+        ctx.globalAlpha = region.opacity;
+        ctx.fillRect(
+          region.x * cellSize,
+          region.y * cellSize,
+          region.width * cellSize,
+          region.height * cellSize
+        );
+
+      });
+    }
+
+    function animate() {
+      updateGrid();
+      updateRegions();
+      draw();
+      setTimeout(() => requestAnimationFrame(animate), animationDelay);
+    }
+
+    window.addEventListener("resize", init);
+    init();
+    animate();
+  </script>
+</body>
+</html>
