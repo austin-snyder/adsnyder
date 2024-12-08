@@ -13,7 +13,7 @@ Create a new branch for your changes:
 Make changes to the separate files in your branch.
 
 Stage and commit your changes:
-    `git add <file1> <file2>`
+    `git add <file1> <file2>` (`git add .` adds all changed files)
     `git commit -m "Descriptive message about the changes"`
     `git push origin <branch-name>`
 
