@@ -1,6 +1,24 @@
-evan test
-evan test2
-evan test3
+###################################
+### SIMPLIFIED GIT INSTRUCTIONS ###
+###################################
+
+To push changes to a separate branch of the website:
+    git checkout -b <branch-name>
+    git add .
+    git commit -m "<commit-message>"
+    git push origin <branch-name>
+
+To pull changes into the main branch of the website (make it live):
+    1. Go to the GitHub repository page in a browser.
+    2. Find your recently pushed branch and select the option to "Create Pull Request."
+    3. Add a description of the changes and submit the pull request.
+
+After merging the changes via GitHub, update your local repository with:
+    git pull origin main
+
+##################################
+### LONG-FORM GIT INSTRUCTIONS ###
+##################################
 
 # Pull Files from the GitHub Repository
 To pull files the first time:
