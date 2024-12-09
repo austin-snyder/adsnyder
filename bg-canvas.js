@@ -4,8 +4,8 @@ const canvas = document.getElementById("gameCanvas");
     const cols = 12; // Fixed 12-column layout
     const minRegionSize = 2;
     const maxRegionSize = 8;
-    const animationDelay = 300; 
-    const fadeSpeed = 0.03;
+    const animationDelay = 200; 
+    const fadeSpeed = 0.04;
 
     const paletteSwitcher = document.querySelector('.palette-switcher');
 
@@ -146,13 +146,23 @@ paletteSwitcher.addEventListener("click", (event) => {
       const nextGrid = grid.map((row, y) =>
         row.map((cell, x) => {
           const neighbors = countNeighbors(x, y);
-          if (cell === 1 && (neighbors < 2 || neighbors > 3)) return 0;
-          if (cell === 0 && neighbors === 3) return 1;
-          return cell;
+    
+          if (cell === 1) {
+            // Alive cell: Transition to decay if dying conditions are met
+            return (neighbors < 2 || neighbors > 3) ? 2 : 1;
+          } 
+          if (cell === 2) {
+            // Decay cell: Dies after one step
+            return 0;
+          }
+          // Dead cell: Becomes alive if exactly 3 neighbors
+          return neighbors === 3 ? 1 : 0;
         })
       );
       grid = nextGrid;
     }
+    
+    
 
     function countNeighbors(x, y) {
       let sum = 0;
