@@ -23,6 +23,7 @@
 .padding-t-16 { padding-top: 16px; }
 .padding-b-24 { padding-bottom: 24px; }
 .padding-x-24 { padding-left: 24px; padding-right: 24px; }
+.padding-x-32 { padding-left: 32px; padding-right: 32px; }
 .padding-y-16 { padding-top: 16px; padding-bottom: 16px; }
 
 .margin-8 { margin: 8px; }
@@ -33,6 +34,7 @@
 .margin-t-8 { margin-top: 8px; }
 .margin-b-16 { margin-bottom: 16px; }
 .margin-x-24 { margin-left: 24px; margin-right: 24px; }
+.margin-x-32 { margin-left: 32px; margin-right: 32px; }
 .margin-y-16 { margin-top: 16px; margin-bottom: 16px; }
 
 .flex-row-8 { display: flex; flex-direction: row; gap: 8px; }
