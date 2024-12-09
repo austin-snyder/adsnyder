@@ -3,7 +3,7 @@
 ###################################
 
 To push changes to a separate branch of the website:
-    git checkout -b <branch-name>
+    git checkout <branch-name>
     git add .
     git commit -m "<commit-message>"
     git push origin <branch-name>
