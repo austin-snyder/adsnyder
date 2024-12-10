@@ -269,12 +269,11 @@ body {
   }
 
   .language-tag {
-    padding: 6px 12px;
-    border-radius: 8px;
     background-color: #ffebd4;
-    font-size: 1rem;
-    color: #333;
-    text-align: center;
+  }
+
+  .tools-tag {
+    background-color: #ffd4fb;
   }
   
 
