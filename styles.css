@@ -238,7 +238,16 @@ body {
     width: 100%;
     object-fit: cover;
   }
-  
+
+  .additional-project-tags-wrapper {
+    display: none;
+    flex-direction: row; /* Ensure tags are stacked vertically */
+    margin-top: 8px; /* Add some space between the icon and additional tags */
+  }
+
+  .project-tags-more-icon {
+    cursor: pointer;
+  }
 
   
   .project-card-headline-container p {
@@ -269,6 +278,14 @@ body {
     font-size: 1rem;
     color: #333;
     text-align: center;
+  }
+
+  .language-tag {
+    background-color: #ffebd4;
+  }
+
+  .tools-tag {
+    background-color: #ffd4fb;
   }
   
 
