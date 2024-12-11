@@ -2,14 +2,14 @@
 :root {
 --unit-08: calc(0.125 * var(--unit-1));
 --unit-05: calc(0.5 * var(--unit-1));
---unit-1: calc(1 * 8.33vw);
+--unit-1: calc(1 * 5vw);
 --unit-2: calc(2 * var(--unit-1));
 --unit-3: calc(3 * var(--unit-1));
 
 --text-black: #0b0707;
 --text-gray: #6b6b6b;
 
---hero-height: 70vh;
+--hero-height: 50vh;
 }
 
 
@@ -117,7 +117,7 @@ a{
     width: 100%;
     height: 100%;
     z-index: -1; /* Behind content */
-    clip-path: inset(0 0 calc(100% - var(--hero-height, 70vh)) 0);
+    clip-path: inset(0 0 calc(100% - var(--hero-height, 50vh)) 0);
   }
   
 
@@ -155,19 +155,24 @@ body {
   }
   
 
-  
+  section#hero {
+    align-items: center;
+    justify-content: center;
+  }
+
+
   .hero {
-    position: relative; /* Ensure it's a reference for the canvas cropping */
-    height: var(--hero-height, 20vh); /* Example height */
+    position: relative;
+    height: var(--hero-height, 50vh);
     display: flex;
-    align-items: left;
-    justify-content: left;
+    justify-content: space-between;
     text-align: left;
+    width: 100%;
+    max-width: 1440px;
   }
   
   .hero h1 {
-    margin-top: var(--unit-1);
-    margin-left: var(--unit-1);
+    margin-top: 120px;
     font-size: 3rem;
     line-height: 1.2;
   
@@ -176,8 +181,8 @@ body {
 
   .palette-switcher {
     position: absolute;
-    top: var(--unit-1);
-    right: var(--unit-1);
+    top: 120px;
+    right: 0;
     display: flex;
     gap: 24px; /* 24px spacing between circles */
     z-index: 10; /* Ensure it's above other content */
@@ -198,11 +203,18 @@ body {
 
 
 
+  section#projects {
+    margin-top: 120px;
+    margin-bottom: 120px;
+    gap: 80px;
+    align-items: center;
+  }
 
   .projects-container {
     display: flex;
     gap: 24px;
     margin: 0 var(--unit-1);
+    max-width: 1440px;
   }
   
   .project-card {
@@ -292,9 +304,3 @@ body {
   }
 
 
-
-  section#projects {
-    margin-top: 80px;
-    margin-bottom: 80px;
-    gap: 80px;
-  }
