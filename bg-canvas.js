@@ -1,17 +1,17 @@
 const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    const cols = 12; // Fixed 12-column layout
-    const minRegionSize = 2;
+    const cols = 20; // Fixed 12-column layout
+    const minRegionSize = 4;
     const maxRegionSize = 8;
-    const animationDelay = 200; 
+    const animationDelay = 240; 
     const fadeSpeed = 0.04;
 
     const paletteSwitcher = document.querySelector('.palette-switcher');
 
     // Define the palettes
     const palettes = {
-      yellow: ["#F6B845", "#F9B588", "#FFEFE1"],
+      yellow: ["#F6B845", "#F9B588", "#ffffff"],
       blue: ["#4C9DF9", "#A2AAFF", "#D4E2FF"],
       purple: ["#A150E7", "#FD82F7", "#FADAFF"]
     };
@@ -206,14 +206,14 @@ paletteSwitcher.addEventListener("click", (event) => {
         const circleColor = colorPalette[colorPalette.length - 2]; // Penultimate color in palette
         grid.forEach((row, y) => {
           row.forEach((cell, x) => {
-            if (cell === 1) {
+            if (cell === 1 || cell === 2) {
               const centerX = x * cellWidth + cellWidth / 2;
               const centerY = y * unitHeight + unitHeight / 2;
               const radius = Math.min(cellWidth, unitHeight) * 0.05;
-      
+        
               ctx.beginPath();
-              ctx.fillStyle = circleColor;
-              ctx.globalAlpha = 0.8;
+              ctx.fillStyle = cell === 1 ? circleColor : "rgba(0, 0, 0, 0.2)"; // Alive or Decay
+              ctx.globalAlpha = 0.7; // Slight transparency
               ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
               ctx.fill();
             }
