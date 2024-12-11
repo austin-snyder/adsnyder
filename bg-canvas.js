@@ -55,9 +55,6 @@ paletteSwitcher.addEventListener("click", (event) => {
     generateRegions();
     animate();
   }
-  
-  
-
 
     function generateInitialGrid(rows) {
       return Array.from({ length: rows }, () =>
