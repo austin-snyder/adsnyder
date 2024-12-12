@@ -129,18 +129,55 @@ h1 {
 
 /* Hero Section */
 section#hero {
-  align-items: center;
-  justify-content: center;
+  display: flex;
+  flex-direction: row;
 }
 
 .hero {
   position: relative;
   height: var(--hero-height, 50vh);
   display: flex;
-  justify-content: space-between;
-  text-align: left;
+  flex-direction: column;
+  
   width: 100%;
-  max-width: 1440px;
+}
+
+.hero-intro {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.navigation {
+  margin-top: 120px;
+  font-size: 1.4rem;
+}
+
+.nav-links a:hover {
+  color: #6b6b6b;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.nav-links ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  
+}
+
+.nav-links ul li a {
+  text-decoration: none;
+  color: var(--color-text-main);
+  font-size: 18px;
 }
 
 .hero h1 {
@@ -151,9 +188,7 @@ section#hero {
 
 /* Palette Switcher */
 .palette-switcher {
-  position: absolute;
-  top: 120px;
-  right: 0;
+  margin-top: 40px;
   display: flex;
   gap: 24px; /* 24px spacing between circles */
   z-index: 10; /* Ensure it's above other content */
@@ -177,6 +212,10 @@ section#projects {
   margin-bottom: 120px;
   gap: 80px;
   align-items: center;
+}
+
+section {
+  margin: 0 var(--unit-1);
 }
 
 .projects-container {
