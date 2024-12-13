@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expandable Tags</title>
+  <style>
+    /* Container styles */
+    .tag-container {
+      width: 380px; /* Default width */
+      display: flex;
+      flex-wrap: wrap; /* Allow items to wrap */
+      gap: 8px; /* Space between tags */
+      padding: 16px;
+      border: 1px solid #DDD;
+      border-radius: 8px;
+      transition: width 0.3s ease-in-out; /* Smooth animation for width changes */
+      position: relative;
+    }
+
+    /* Tag styles */
+    .tag {
+      background-color: #E6EDFF; /* Light blue */
+      color: #333;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      white-space: nowrap; /* Prevent line breaks in individual tags */
+      text-align: center;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+.tag.hidden {
+  display: none; /* Completely hide tags when collapsed */
+}
+
+.tag-container.expanded .tag.hidden {
+  display: inline-flex; /* Show tags inline with wrapping */
+  opacity: 0;
+  transform: scale(0.8);
+  animation: fadeIn 0.3s forwards;
+}
+
+
+    /* Expand Button */
+    .expand-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #555;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .expand-button.rotated {
+      transform: rotate(45deg); /* Rotate when expanded */
+    }
+
+    /* Slider container */
+    .slider-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .slider-label {
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center;">Expandable Tags Container</h2>
+
+  <!-- Tag Container -->
+  <div class="tag-container" id="tagContainer">
+    <!-- Primary Tag -->
+    <span class="tag">Data Simulation</span>
+
+    <!-- Hidden Tags -->
+    <span class="tag hidden">Python</span>
+    <span class="tag hidden">Data Analysis</span>
+    <span class="tag hidden">C++</span>
+    <span class="tag hidden">JavaScript</span>
+
+    <!-- Expand Button -->
+    <button class="expand-button" id="expandButton">+</button>
+  </div>
+
+  <!-- Slider Controls -->
+  <div class="slider-container">
+    <label class="slider-label" for="widthSlider">Adjust Container Width:</label>
+    <input 
+      type="range" 
+      id="widthSlider" 
+      min="200" 
+      max="600" 
+      value="380"
+    >
+    <div class="slider-label">
+      Current Width: <span id="currentWidth">380px</span>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById("widthSlider");
+    const tagContainer = document.getElementById("tagContainer");
+    const currentWidthDisplay = document.getElementById("currentWidth");
+    const expandButton = document.getElementById("expandButton");
+    const hiddenTags = document.querySelectorAll(".tag.hidden");
+
+    let expanded = false;
+
+    // Update container width and display value
+    slider.addEventListener("input", () => {
+      const newWidth = slider.value + "px";
+      tagContainer.style.width = newWidth;
+      currentWidthDisplay.textContent = newWidth;
+    });
+
+    // Expand and collapse hidden tags
+    expandButton.addEventListener("click", () => {
+      expanded = !expanded;
+
+      hiddenTags.forEach(tag => {
+        tag.classList.toggle("hidden", !expanded); // Toggle visibility
+      });
+
+      expandButton.classList.toggle("rotated", expanded); // Rotate button
+      expandButton.textContent = expanded ? "×" : "+"; // Change button text
+    });
+  </script>
+</body>
+</html>

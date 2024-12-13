@@ -11,7 +11,7 @@ const paletteSwitcher = document.querySelector('.palette-switcher');
 
 // Define the palettes
 const palettes = {
-  yellow: ["#F6B845", "#F9B588", "#ffffff"],
+  yellow: ["#F6B845", "#F9B588", "#FFEFE1"],
   blue: ["#4C9DF9", "#A2AAFF", "#D4E2FF"],
   purple: ["#A150E7", "#FD82F7", "#FADAFF"],
 };
@@ -25,6 +25,9 @@ paletteSwitcher.addEventListener("click", (event) => {
   const paletteKey = event.target.dataset.palette;
   if (paletteKey && palettes[paletteKey]) {
     colorPalette = palettes[paletteKey];
+
+    document.documentElement.style.setProperty('--color-palette-light', colorPalette[2]);
+
     updateRegionsColors();
   }
 });
