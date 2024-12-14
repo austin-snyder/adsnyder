@@ -227,11 +227,40 @@ class ContentColumns extends HTMLElement {
         max-width: 33%;
       }
 
+       @media (max-width: 1024px) {
+
+       h2 {
+        font-size: 1.5em;
+        line-height: 1.4em;
+        margin: 0;
+        margin-bottom: 16px;
+        max-width: 100%;
+      }
+  }
+
       .content-wrapper {
         display: grid;
         grid-template-columns: repeat(${totalColumns}, 1fr);
         gap: 24px;
       }
+
+
+         @media (max-width: 1024px) {
+      .content-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+}
+
+
+      @media (max-width: 768px) {
+      .content-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+}
 
       .image-container {
         display: flex;
