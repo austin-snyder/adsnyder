@@ -2,7 +2,7 @@
 :root {
   --unit-08: calc(0.125 * var(--unit-1));
   --unit-05: calc(0.5 * var(--unit-1));
-  --unit-1: calc(1 * 5vw);
+  --unit-1: calc(1 * 8.3vw);
   --unit-2: calc(2 * var(--unit-1));
   --unit-3: calc(3 * var(--unit-1));
 

@@ -26,129 +26,184 @@ class ContentColumns extends HTMLElement {
     // Total columns
     const totalColumns = this.getAttribute('columns') || 4;
 
-    // Content wrapper
+    // Content grid wrapper
     const contentWrapper = document.createElement('div');
     contentWrapper.classList.add('content-wrapper');
 
-    // Process "blocks" that were previously only images
-    let imageCount = 1;
-    while (true) {
-      // Check if any attribute for this count exists that would justify creating a block
-      const hasImage = this.hasAttribute(`image-${imageCount}-src`);
-      const hasTags = this.hasAttribute(`image-${imageCount}-tags`);
-      const hasCaption = this.hasAttribute(`image-${imageCount}-caption`);
-      const hasLink = this.hasAttribute(`image-${imageCount}-link`) && this.hasAttribute(`image-${imageCount}-link-src`);
+    // Data structures to hold block info
+    const imageBlocks = {};
+    const textBlocks = {};
+    const spacerBlocks = {};
 
-      // If none of these attributes are present for this index, break out of the loop
-      if (!hasImage && !hasTags && !hasCaption && !hasLink) {
-        break;
+    // We'll keep an ordered list of items as we encounter them in the attributes
+    // Each item is {type: 'image'|'text'|'spacer', n: number}
+    const items = [];
+
+    // Helper function to record an item if we haven't seen that n/type yet
+    function ensureItem(type, n) {
+      // Check if we already have an item of this type and n
+      // For image blocks, multiple attributes define one block, so add only once
+      // For text and spacer, it's a single attribute anyway
+      const exists = items.find(item => item.type === type && item.n === n);
+      if (!exists) {
+        items.push({ type, n });
+      }
+    }
+
+    // Parse all attributes in the order they appear
+    for (let i = 0; i < this.attributes.length; i++) {
+      const attr = this.attributes[i];
+      const attrName = attr.name;
+
+      // Match patterns: image-n-*, text-n, spacer-n
+      let match = attrName.match(/^image-(\d+)-(src|alt|tags|caption|link|link-src|span)$/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (!imageBlocks[n]) imageBlocks[n] = {};
+        imageBlocks[n][match[2]] = attr.value;
+        ensureItem('image', n);
+        continue;
       }
 
-      // Create a generic block container (instead of imageContainer)
-      const blockContainer = document.createElement('div');
-      blockContainer.classList.add('image-container');
-      blockContainer.style.gridColumn = `span ${this.getAttribute(`image-${imageCount}-span`) || 1}`;
-
-      // If image is present, add it
-      if (hasImage) {
-        const image = document.createElement('img');
-        image.src = this.getAttribute(`image-${imageCount}-src`);
-        image.alt = this.getAttribute(`image-${imageCount}-alt`) || `Image ${imageCount}`;
-        image.classList.add('content-image');
-        blockContainer.appendChild(image);
+      match = attrName.match(/^text-(\d+)(-span)?$/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (!textBlocks[n]) textBlocks[n] = {};
+        if (match[2] === '-span') {
+          textBlocks[n].span = attr.value;
+        } else {
+          textBlocks[n].text = attr.value;
+        }
+        ensureItem('text', n);
+        continue;
       }
 
-      // If tags are present, show them even if no image
-      if (hasTags) {
-        const tagsStr = this.getAttribute(`image-${imageCount}-tags`) || "";
-        const tags = tagsStr.split(',').map(tag => tag.trim()).filter(Boolean);
+      match = attrName.match(/^spacer-(\d+)(-span)?$/);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (!spacerBlocks[n]) spacerBlocks[n] = {};
+        if (match[2] === '-span') {
+          spacerBlocks[n].span = attr.value;
+        } else {
+          spacerBlocks[n].isSpacer = true; // Just a flag
+        }
+        ensureItem('spacer', n);
+        continue;
+      }
+    }
 
-        if (tags.length > 0) {
-          const tagContainer = document.createElement('div');
-          tagContainer.classList.add('tag-container');
+    // Now we have an ordered list of items in the order attributes appeared.
+    // Let's create elements for each item:
+    for (const item of items) {
+      let blockContainer;
 
-          const primaryTag = tags[0];
-          const otherTags = tags.slice(1);
+      if (item.type === 'image') {
+        const ib = imageBlocks[item.n] || {};
+        blockContainer = document.createElement('div');
+        blockContainer.classList.add('image-container');
+        const span = parseInt(ib.span || '1', 10);
+        blockContainer.style.gridColumn = `span ${span}`;
 
-          // Add primary tag
-          if (primaryTag) {
-            const primaryTagEl = this._createTag(primaryTag, this._getTagColor(primaryTag, tagColors));
-            tagContainer.appendChild(primaryTagEl);
-          }
+        // If image src is present
+        if (ib.src) {
+          const image = document.createElement('img');
+          image.src = ib.src;
+          image.alt = ib.alt || `Image ${item.n}`;
+          image.classList.add('content-image');
+          blockContainer.appendChild(image);
+        }
 
-          // Add hidden tags
-          otherTags.forEach(tag => {
-            const tagEl = this._createTag(tag, this._getTagColor(tag, tagColors));
-            tagEl.classList.add('hidden');
-            tagContainer.appendChild(tagEl);
-          });
+        // If tags are present
+        if (ib.tags) {
+          const tags = ib.tags.split(',').map(t => t.trim()).filter(Boolean);
+          if (tags.length > 0) {
+            const tagContainer = document.createElement('div');
+            tagContainer.classList.add('tag-container');
 
-          // Expand Button if we have other tags
-          if (otherTags.length > 0) {
-            const expandButton = document.createElement('button');
-            expandButton.classList.add('expand-button');
-            expandButton.textContent = "+";
-            expandButton.addEventListener('click', () => {
-              const expanded = tagContainer.classList.toggle('expanded');
-              expandButton.classList.toggle('rotated', expanded);
-              expandButton.textContent = expanded ? "–" : "+";
+            const primaryTag = tags[0];
+            const otherTags = tags.slice(1);
+
+            // Add primary tag
+            if (primaryTag) {
+              const primaryTagEl = this._createTag(primaryTag, this._getTagColor(primaryTag, tagColors));
+              tagContainer.appendChild(primaryTagEl);
+            }
+
+            // Add hidden tags
+            otherTags.forEach(tag => {
+              const tagEl = this._createTag(tag, this._getTagColor(tag, tagColors));
+              tagEl.classList.add('hidden');
+              tagContainer.appendChild(tagEl);
             });
-            tagContainer.appendChild(expandButton);
+
+            // Expand Button if needed
+            if (otherTags.length > 0) {
+              const expandButton = document.createElement('button');
+              expandButton.classList.add('expand-button');
+              expandButton.textContent = "+";
+              expandButton.addEventListener('click', () => {
+                const expanded = tagContainer.classList.toggle('expanded');
+                expandButton.classList.toggle('rotated', expanded);
+                expandButton.textContent = expanded ? "–" : "+";
+              });
+              tagContainer.appendChild(expandButton);
+            }
+            blockContainer.appendChild(tagContainer);
           }
-
-          blockContainer.appendChild(tagContainer);
         }
-      }
 
-      // If caption is present
-      if (hasCaption) {
-        const captionText = this.getAttribute(`image-${imageCount}-caption`) || '';
-        const caption = document.createElement('p');
-        caption.textContent = captionText;
-        caption.classList.add('image-caption');
-        blockContainer.appendChild(caption);
+        // If caption is present
+        if (ib.caption) {
+          const caption = document.createElement('p');
+          caption.textContent = ib.caption;
+          caption.classList.add('image-caption');
+          blockContainer.appendChild(caption);
 
-        // If link is also present
-        if (hasLink) {
-          const linkWrapper = document.createElement('p');
-          linkWrapper.classList.add('image-link');
+          // If link is also present
+          if (ib.link && ib['link-src']) {
+            const linkWrapper = document.createElement('p');
+            linkWrapper.classList.add('image-link');
 
-          const link = document.createElement('a');
-          link.href = this.getAttribute(`image-${imageCount}-link-src`);
-          link.textContent = this.getAttribute(`image-${imageCount}-link`);
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
+            const link = document.createElement('a');
+            link.href = ib['link-src'];
+            link.textContent = ib.link;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
 
-          linkWrapper.appendChild(link);
-          blockContainer.appendChild(linkWrapper);
+            linkWrapper.appendChild(link);
+            blockContainer.appendChild(linkWrapper);
+          }
         }
-      }
 
-      // Append the block container if it has any content
-      if (blockContainer.childNodes.length > 0) {
         contentWrapper.appendChild(blockContainer);
       }
 
-      imageCount++;
-    }
+      else if (item.type === 'text') {
+        const tb = textBlocks[item.n] || {};
+        if (tb.text) {
+          blockContainer = document.createElement('div');
+          blockContainer.classList.add('text-container');
+          const span = parseInt(tb.span || '1', 10);
+          blockContainer.style.gridColumn = `span ${span}`;
 
-    // Process text blocks
-    let textCount = 1;
-    while (this.hasAttribute(`text-${textCount}`)) {
-      const textValue = this.getAttribute(`text-${textCount}`);
-      if (textValue) {
-        const textContainer = document.createElement('div');
-        textContainer.classList.add('text-container');
-        const span = parseInt(this.getAttribute(`text-${textCount}-span`), 10) || 1;
-        textContainer.style.gridColumn = `span ${span}`;
-
-        const p = document.createElement('p');
-        p.textContent = textValue;
-        textContainer.appendChild(p);
-
-        contentWrapper.appendChild(textContainer);
+          const p = document.createElement('p');
+          p.textContent = tb.text;
+          blockContainer.appendChild(p);
+          contentWrapper.appendChild(blockContainer);
+        }
       }
-      textCount++;
+
+      else if (item.type === 'spacer') {
+        const sb = spacerBlocks[item.n] || {};
+        // Just create an empty block
+        blockContainer = document.createElement('div');
+        blockContainer.classList.add('spacer-container');
+        const span = parseInt(sb.span || '1', 10);
+        blockContainer.style.gridColumn = `span ${span}`;
+
+        // You can style the spacer in CSS or leave it empty
+        contentWrapper.appendChild(blockContainer);
+      }
     }
 
     wrapper.appendChild(contentWrapper);
@@ -183,6 +238,7 @@ class ContentColumns extends HTMLElement {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
+        
       }
 
       .content-image {
@@ -261,15 +317,14 @@ class ContentColumns extends HTMLElement {
         transition: transform 0.3s ease-in-out;
       }
 
-        .tag-container:hover .expand-button {
-        display: none;
-        }
-
       .expand-button.rotated {
         transform: rotate(0deg);
       }
 
-      /* Text Container Styles */
+       .tag-container:hover .expand-button {
+        display: none;
+      }
+
       .text-container {
         display: flex;
         flex-direction: column;
@@ -279,6 +334,10 @@ class ContentColumns extends HTMLElement {
         margin: 0;
         font-size: 1em;
         line-height: 1.4em;
+      }
+
+      .spacer-container {
+        /* A spacer block is empty by default, can be styled or left empty */
       }
     `;
 
