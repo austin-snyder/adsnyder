@@ -1,7 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const cols = 24; // Fixed 12-column layout
+let cols = 24; // Fixed 12-column layout
 const minRegionSize = 2;
 const maxRegionSize = 6;
 const animationDelay = 200;
@@ -47,12 +47,27 @@ function getRandomColor() {
 
 // Initialize the canvas and start the animation
 function init() {
-  canvas.width = window.innerWidth; // Full width
-  canvas.height = window.innerHeight; // Full viewport height
 
+  if (window.innerWidth < 768) {
+    // Mobile
+    cols = 6;
+    rowCount = 12;
+  } else if (window.innerWidth < 1200) {
+    // Tablet
+    cols = 12;
+    rowCount = 12;
+  } else {
+    // Desktop
+    cols = 24;
+    rowCount = 16;
+  }
+
+  canvas.width = window.innerWidth; // Full width
   cellWidth = canvas.width / cols; // Square width
   unitHeight = cellWidth; // Match height to maintain squares
-  rowCount = Math.ceil(canvas.height / unitHeight);
+  canvas.height = window.innerHeight * 0.6; // Full viewport height
+
+ 
 
   grid = generateInitialGrid(rowCount);
   regions = [];
