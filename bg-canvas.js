@@ -1,20 +1,21 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const cols = 20; // Fixed 12-column layout
-const minRegionSize = 4;
-const maxRegionSize = 8;
-const animationDelay = 240;
-const fadeSpeed = 0.04;
+const cols = 24; // Fixed 12-column layout
+const minRegionSize = 2;
+const maxRegionSize = 6;
+const animationDelay = 200;
+const fadeSpeed = 0.02;
 
 const paletteSwitcher = document.querySelector('.palette-switcher');
 
 // Define the palettes
 const palettes = {
-  yellow: ["#F6B845", "#F9B588", "#ffffff"],
+  yellow: ["#F6B845", "#F9B588", "#FFEFE1"],
   blue: ["#4C9DF9", "#A2AAFF", "#D4E2FF"],
-  purple: ["#A150E7", "#FD82F7", "#FADAFF"]
+  purple: ["#A150E7", "#FD82F7", "#FADAFF"],
 };
+
 
 let colorPalette = palettes.yellow; // Default palette
 let unitHeight, cellWidth, grid = [], regions = [], rowCount;
@@ -24,6 +25,9 @@ paletteSwitcher.addEventListener("click", (event) => {
   const paletteKey = event.target.dataset.palette;
   if (paletteKey && palettes[paletteKey]) {
     colorPalette = palettes[paletteKey];
+
+    document.documentElement.style.setProperty('--color-palette-light', colorPalette[2]);
+
     updateRegionsColors();
   }
 });
@@ -70,44 +74,78 @@ function generateRegions() {
   for (let y = 0; y < rowCount; y++) {
     for (let x = 0; x < cols;) {
       if (!occupied[y][x]) {
-        // Calculate available space
         const maxWidth = getMaxWidth(occupied, x, y);
         const maxHeight = getMaxHeight(occupied, x, y);
 
-        // Ensure the available space meets minimum size
         if (maxWidth >= minRegionSize && maxHeight >= minRegionSize) {
-          // Choose a random width and height, constrained by minRegionSize and available space
-          const width = getRandomEvenSize(minRegionSize, Math.min(maxRegionSize, maxWidth));
-          const height = getRandomEvenSize(minRegionSize, Math.min(maxRegionSize, maxHeight));
+          const size = getRandomEvenSize(minRegionSize, Math.min(maxRegionSize, Math.min(maxWidth, maxHeight)));
+          markOccupied(occupied, x, y, size, size);
 
-          markOccupied(occupied, x, y, width, height);
+          const startX = x * cellWidth;
+          const startY = y * unitHeight;
+          const width = size * cellWidth;
+          const height = size * unitHeight;
+
+          // Generate a gradient ONCE for this region
+          const gradient = createRandomGradient(startX, startY, width, height);
 
           regions.push({
-            x: x * cellWidth,
-            y: y * unitHeight,
-            width: width * cellWidth,
-            height: height * unitHeight,
+            x: startX,
+            y: startY,
+            width: width,
+            height: height,
             gridX: x,
             gridY: y,
-            gridWidth: width,
-            gridHeight: height,
+            gridWidth: size,
+            gridHeight: size,
             opacity: 0,
             targetOpacity: 0,
-            color: getRandomColor(),
+            gradient: gradient // Store the gradient
           });
 
-          x += width; // Move right by the placed region's width
+          x += size;
         } else {
-          // If space is too small, mark it as unusable and move on
           markOccupied(occupied, x, y, 1, 1);
           x++;
         }
       } else {
-        x++; // Move to the next column if space is already occupied
+        x++;
       }
     }
   }
 }
+
+
+
+// Function to create a random gradient for a region
+function createRandomGradient(x, y, width, height) {
+  const gradientDirections = [
+    [x, y, x + width, y + height],       // Top-left to bottom-right
+    [x + width, y, x, y + height],       // Top-right to bottom-left
+    [x, y + height, x + width, y],       // Bottom-left to top-right
+    [x + width, y + height, x, y],       // Bottom-right to top-left
+  ];
+
+  // Randomly select one direction
+  const [x0, y0, x1, y1] = gradientDirections[Math.floor(Math.random() * gradientDirections.length)];
+
+  // Create gradient with the random direction
+  const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+
+  // Random color from the palette and white
+  const color1 = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+  const color2 = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+
+  gradient.addColorStop(0, color1);
+  gradient.addColorStop(1, color2);
+
+  return gradient;
+}
+
+
+
+
+
 
 // Get the maximum width available for a region
 function getMaxWidth(occupied, startX, y) {
@@ -183,7 +221,7 @@ function updateRegions() {
     }
 
     const totalCells = region.gridWidth * region.gridHeight;
-    region.targetOpacity = Math.min(1, (aliveCount / totalCells) * 1);
+    region.targetOpacity = Math.min(1, (aliveCount / totalCells) * 0.8);
   });
 }
 
@@ -191,14 +229,14 @@ function updateRegions() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw regions with fill color and opacity
+  // Draw regions with gradient fill and opacity
   regions.forEach(region => {
-    ctx.fillStyle = region.color;
-    ctx.globalAlpha = region.opacity;
+    ctx.globalAlpha = region.opacity; // Opacity control
+    ctx.fillStyle = region.gradient; // Use gradient for fill
     ctx.fillRect(region.x, region.y, region.width, region.height);
   });
 
-  // Alive cells as circles
+  // Draw alive cells as circles
   const circleColor = colorPalette[colorPalette.length - 2]; // Penultimate color in palette
   grid.forEach((row, y) => {
     row.forEach((cell, x) => {
@@ -208,7 +246,7 @@ function draw() {
         const radius = Math.min(cellWidth, unitHeight) * 0.05;
 
         ctx.beginPath();
-        ctx.fillStyle = cell === 1 ? circleColor : "rgba(0, 0, 0, 0.2)"; // Alive or Decay
+        ctx.fillStyle = cell === 1 ? circleColor : "rgba(0, 0, 0, 0.2)";
         ctx.globalAlpha = 0.7; // Slight transparency
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.fill();
@@ -216,8 +254,9 @@ function draw() {
     });
   });
 
-  ctx.globalAlpha = 1; // Reset global alpha to default
+  ctx.globalAlpha = 1; // Reset global alpha
 }
+
 
 // Animate the regions and cells
 function animate() {
