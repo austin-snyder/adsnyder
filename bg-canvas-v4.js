@@ -127,9 +127,9 @@ const palettes = {
     const alivePercentage = aliveCount / cellCount;
     
     // hard-coded values for calculating decay rate
-    const maximumLeniency = 1.00; // upper limit on leniency of life; increase for longer game
-    const minimumAlivePercentage = 0.03; // lower limit on leniency of life; decrease for shorter game
-    const strictDecayRate = 10.00; // rate at which % chance for strict decay increases per % of cells alive
+    const maximumLeniency = 1.00; // 0 thru 1; upper limit on leniency of life; increase for longer game
+    const minimumAlivePercentage = 0.05; // 0 thru 1; allows for infinite games in some scenarios, though requires maximumLeniency to be set to 1.00
+    const strictDecayRate = 15.00; // 0 thru 100; rate at which % chance for strict decay increases per % of cells alive
 
     // calculates how strict the decay should be based on how many cells are alive
     const leniency = Math.max(0,Math.min(maximumLeniency, (maximumLeniency - (Math.max(0,alivePercentage-minimumAlivePercentage) * strictDecayRate))));
