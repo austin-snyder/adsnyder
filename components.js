@@ -6,8 +6,8 @@ class ContentColumns extends HTMLElement {
 
     // Tag colors based on category
     const tagColors = {
-      type: '#FDD9D7',    // Soft pink
-      language: '#E6CBFB',// Light purple
+      type: '#D4E2FF',    // Soft pink
+      language: '#FADAFF',// Light purple
       software: '#D4F7DC' // Soft green
     };
 
@@ -224,7 +224,7 @@ class ContentColumns extends HTMLElement {
         line-height: 1.4em;
         margin: 0;
         margin-bottom: 16px;
-        max-width: 33%;
+        max-width: 50%;
       }
 
        @media (max-width: 1024px) {

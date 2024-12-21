@@ -2,16 +2,17 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 let cols = 24; // Fixed 12-column layout
-const minRegionSize = 2;
-const maxRegionSize = 10;
-const animationDelay = 200;
-const fadeSpeed = 0.02;
+const minRegionSize = 1;
+const maxRegionSize = 1;
+const animationDelay = 100;
+const fadeSpeed = 0.05;
+const radius = 20;
 
 const paletteSwitcher = document.querySelector('.palette-switcher');
 
 // Define the palettes
 const palettes = {
-  yellow: ["#F6B845", "#F9B588", "#FFEFE1"],
+    yellow: ["#FF9506", "#F95808", "#FFEFE1", "#FFC00D",],
   blue: ["#4C9DF9", "#A2AAFF", "#D4E2FF"],
   purple: ["#A150E7", "#FD82F7", "#FADAFF"],
 };
@@ -48,13 +49,14 @@ function getRandomColor() {
 // Initialize the canvas and start the animation
 function init() {
 
+
   if (window.innerWidth < 768) {
     // Mobile
-    cols = 6;
+    cols = 12;
     rowCount = 12;
   } else if (window.innerWidth < 1200) {
     // Tablet
-    cols = 12;
+    cols = 24;
     rowCount = 12;
   } else {
     // Desktop
@@ -62,10 +64,10 @@ function init() {
     rowCount = 16;
   }
 
-  canvas.width = window.innerWidth; // Full width
+  canvas.width = window.innerWidth;
   cellWidth = canvas.width / cols; // Square width
   unitHeight = cellWidth; // Match height to maintain squares
-  canvas.height = window.innerHeight * 0.6; // Full viewport height
+  canvas.height = cellWidth * 12;
 
  
 
@@ -198,8 +200,8 @@ function updateGameOfLife() {
       const neighbors = countNeighbors(x, y);
 
       if (cell === 1) {
-        // Alive cell: Transition to decay if dying conditions are met
-        return (neighbors < 2 || neighbors > 3) ? 2 : 1;
+        // Alive cell: Dies with fewer than 2 neighbors (isolation) or more than 2 neighbors (overcrowding)
+        return (neighbors < 2 || neighbors > 2) ? 2 : 1;
       }
       if (cell === 2) {
         // Decay cell: Dies after one step
@@ -225,6 +227,9 @@ function countNeighbors(x, y) {
   return sum - grid[y][x];
 }
 
+
+
+
 // Update the opacity of regions based on the Game of Life grid
 function updateRegions() {
   regions.forEach(region => {
@@ -236,41 +241,58 @@ function updateRegions() {
     }
 
     const totalCells = region.gridWidth * region.gridHeight;
-    region.targetOpacity = Math.min(1, (aliveCount / totalCells) * 4);
+    region.targetOpacity = Math.min(1, (aliveCount / totalCells) * 0.8);
   });
 }
 
-// Draw the regions and cells on the canvas
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Draw regions with gradient fill and opacity
-  regions.forEach(region => {
-    ctx.globalAlpha = region.opacity; // Opacity control
-    ctx.fillStyle = region.gradient; // Use gradient for fill
-    ctx.fillRect(region.x, region.y, region.width, region.height);
-  });
-
-  // Draw alive cells as circles
-  const circleColor = colorPalette[colorPalette.length - 2]; // Penultimate color in palette
-  grid.forEach((row, y) => {
-    row.forEach((cell, x) => {
-      if (cell === 1 || cell === 2) {
-        const centerX = x * cellWidth + cellWidth / 2;
-        const centerY = y * unitHeight + unitHeight / 2;
-        const radius = Math.min(cellWidth, unitHeight) * 0.05;
-
-        ctx.beginPath();
-        ctx.fillStyle = cell === 1 ? circleColor : "rgba(0, 0, 0, 0.2)";
-        ctx.globalAlpha = 0.7; // Slight transparency
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
+// Helper function to draw rounded rectangles
+function drawRoundedRect(x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.arc(x + width - radius, y + radius, radius, -Math.PI / 2, 0, false);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.arc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2, false);
+    ctx.lineTo(x + radius, y + height);
+    ctx.arc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI, false);
+    ctx.lineTo(x, y + radius);
+    ctx.arc(x + radius, y + radius, radius, Math.PI, -Math.PI / 2, false);
+    ctx.closePath();
+    ctx.fill();
+  }
+  
+  // Update the draw() function to use rounded corners
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+    // Draw regions with gradient fill and opacity
+    regions.forEach(region => {
+      ctx.globalAlpha = region.opacity; // Opacity control
+      ctx.fillStyle = region.gradient; // Use gradient for fill
+      drawRoundedRect(region.x, region.y, region.width, region.height, radius);
     });
-  });
-
-  ctx.globalAlpha = 1; // Reset global alpha
-}
+  
+    // Draw alive cells as circles
+    const circleColor = colorPalette[colorPalette.length - 2]; // Penultimate color in palette
+    grid.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        if (cell === 1 || cell === 2) {
+          const centerX = x * cellWidth + cellWidth / 2;
+          const centerY = y * unitHeight + unitHeight / 2;
+          const radius = Math.min(cellWidth, unitHeight) * 0;
+  
+          ctx.beginPath();
+          ctx.fillStyle = cell === 1 ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.5)";
+          ctx.globalAlpha = 0.7; // Slight transparency
+          ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+    });
+  
+    ctx.globalAlpha = 1; // Reset global alpha
+  }
+  
 
 
 // Animate the regions and cells
