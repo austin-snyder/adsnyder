@@ -27,11 +27,9 @@ const palettes = {
     const paletteKey = event.target.dataset.palette;
     if (paletteKey && palettes[paletteKey]) {
       colorPalette = palettes[paletteKey];
-
-       // Update the CSS variable directly
-    document.documentElement.style.setProperty('--color-palette-light', colorPalette[0]);
-    document.documentElement.style.setProperty('--color-palette-full', colorPalette[2]);
-
+      // Update the CSS variable directly
+      document.documentElement.style.setProperty('--color-palette-light', colorPalette[0]);
+      document.documentElement.style.setProperty('--color-palette-full', colorPalette[2]);
       // Re-generate gradients for each cell
       generateCellGradients();
       // Force a draw
