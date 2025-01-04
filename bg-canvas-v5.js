@@ -1,41 +1,40 @@
 /** PALETTES **/
 const palettes = {
-  yellow: ["#FFEFE1", "#FFC00D", "#FF9506", "#F95808",],
-  blue: ["#D4E2FF", "#A2AAFF", "#4C9DF9", "#4CE0F5"],
-  purple: ["#FADAFF", "#FD82F7", "#D77CEE", "#CB2C85"],
-  green: ["#4CF9A3", "#AAFFA2", "#D4FFE8", "#29BB74"],
-};
-
-/** DOM Elements **/
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const paletteSwitcher = document.querySelector(".palette-switcher");
-
-/** Game-of-Life + Gradient Parameters **/
-let colorPalette = palettes.blue; // default
-let fadeSpeed = 0.05;
-let animationDelay = 150;
-let cols = 24;
-let rowCount = 12;
-let cellWidth, cellHeight;
-let grid = [];     // The 2D array that stores the "state" (0,1,2)
-let cells = [];    // A parallel 2D array that stores the gradient & opacity
-let radius = 0.0;  // Circle radius (will set based on cell size)
-
-/** Switch Palettes */
-paletteSwitcher?.addEventListener("click", (event) => {
-  const paletteKey = event.target.dataset.palette;
-  if (paletteKey && palettes[paletteKey]) {
-    colorPalette = palettes[paletteKey];
-    // Update the CSS variable directly
-    document.documentElement.style.setProperty('--color-palette-light', colorPalette[0]);
-    document.documentElement.style.setProperty('--color-palette-full', colorPalette[2]);
-    // Re-generate gradients for each cell
-    generateCellGradients();
-    // Force a draw
-    draw();
-  }
-});
+    yellow: ["#FFEFE1", "#FFC00D", "#FF9506", "#F95808"],
+    blue: ["#D4E2FF", "#A2AAFF", "#4C9DF9", "#4CE0F5"],
+    purple: ["#FADAFF", "#FD82F7", "#D77CEE", "#CB2C85"],
+  };
+  
+  /** DOM Elements **/
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+  const paletteSwitcher = document.querySelector(".palette-switcher");
+  
+  /** Game-of-Life + Gradient Parameters **/
+  let colorPalette = palettes.blue; // default
+  let fadeSpeed = 0.05;
+  let animationDelay = 150;
+  let cols = 24;
+  let rowCount = 12;
+  let cellWidth, cellHeight;
+  let grid = [];     // The 2D array that stores the "state" (0,1,2)
+  let cells = [];    // A parallel 2D array that stores the gradient & opacity
+  let radius = 0.0;  // Circle radius (will set based on cell size)
+  
+  /** Switch Palettes */
+  paletteSwitcher?.addEventListener("click", (event) => {
+    const paletteKey = event.target.dataset.palette;
+    if (paletteKey && palettes[paletteKey]) {
+      colorPalette = palettes[paletteKey];
+      // update CSS variables with palette
+      document.documentElement.style.setProperty('--color-palette-light', colorPalette[0]);
+      document.documentElement.style.setProperty('--color-palette-full', colorPalette[2]);
+      // Re-generate gradients for each cell
+      generateCellGradients();
+      // Force a draw
+      draw();
+    }
+  });
   
   /** Initialize Canvas + Game of Life */
   function init() {
