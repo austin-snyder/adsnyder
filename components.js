@@ -241,23 +241,23 @@ class ContentColumns extends HTMLElement {
       .content-wrapper {
         display: grid;
         grid-template-columns: repeat(${totalColumns}, 1fr);
-        gap: 24px;
+        grid-gap: 60px 24px;
       }
 
 
          @media (max-width: 1024px) {
       .content-wrapper {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 16px;
       }
 }
 
 
-      @media (max-width: 768px) {
+      @media (max-width: 600px) {
       .content-wrapper {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         gap: 16px;
       }
 }

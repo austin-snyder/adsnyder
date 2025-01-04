@@ -198,7 +198,7 @@ section#hero {
 
   .navigation {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: start;
     gap: 16px;
   }
@@ -210,6 +210,12 @@ section#hero {
   text-decoration: underline;
 }
 
+
+.nav-links {
+  position: sticky;
+  top: 40px;
+}
+
 .nav-links ul {
   list-style: none;
   display: flex;
@@ -219,6 +225,17 @@ section#hero {
   margin: 0;
   pointer-events: all;
   
+}
+
+
+@media screen and (max-width: 768px) {
+
+  .nav-links ul {
+
+    flex-direction: row;
+
+    
+  }
 }
 
 
@@ -280,6 +297,7 @@ section#hero {
 /* Projects Section */
 section#projects {
   padding-bottom: 120px;
+  padding-top: 24px;
   gap: 120px;
   align-items: center;
   background-color: white;
@@ -310,8 +328,23 @@ gap: 40px;
 
 .left-content-container {
   width: 25%;
-
 }
+
+
+@media screen and (max-width: 768px) {
+
+  .two-column-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    }
+    
+    .left-content-container {
+      width: 100%;
+    
+    }
+}
+
 
 
 
