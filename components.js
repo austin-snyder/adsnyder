@@ -273,6 +273,7 @@ class ContentColumns extends HTMLElement {
       .content-image {
         width: 100%;
         border-radius: 8px;
+        background-color: var(--color-palette-full);
       }
 
       .image-caption {
