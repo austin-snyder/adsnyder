@@ -11,8 +11,7 @@
 
   --hero-height: 20vh;
 
-  --color-palette-light: #D4E2FF;
-  --color-palette-full: #A2AAFF;
+  --color-palette-light: #FFEFE1;
   --color-palette-white: #FFFFFF;
 }
 
@@ -167,7 +166,7 @@ section#hero {
    section#hero {
     display: flex;
     flex-direction: row;
-    min-height: 50vh;
+    height: 40vh;
     justify-content: center;
     pointer-events: none;
     
@@ -177,33 +176,31 @@ section#hero {
 
 .hero-intro {
   display: flex;
-  flex-direction: column;
-  align-items: start;
-  text-align: left;
- gap: 16px;
-}
-
-
-
-.navigation {
-  position: relative;
-  font-size: 1.4rem;
-  display: flex;
   flex-direction: row;
+  align-items: center;
+  text-align: left;
   justify-content: space-between;
-  width: 100%;
 }
 
 @media screen and (max-width: 768px) {
 
-  .navigation {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 16px;
-  }
+   .hero-intro {
+     display: flex;
+     flex-direction: column;
+     align-items: start;
+     gap: 16px;
+   }
+ }
+
+.navigation {
+  position: relative;
+  font-size: 1.4rem;
+  pointer-events: all;
 }
 
+.nav-links a:hover {
+  color: #6b6b6b;
+}
 
 .nav-links a.active {
   font-weight: bold;
@@ -214,32 +211,17 @@ section#hero {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 40px;
   margin: 0;
-  pointer-events: all;
+  padding: 0;
   
 }
-
 
 .nav-links ul li a {
   text-decoration: none;
   color: var(--color-text-main);
   font-size: 18px;
-  background-color: var(--color-palette-light);
-  padding: 6px 12px;
-  border-radius: 8px;
 }
-
-.nav-links ul li {
-  transition: transform 0.2s ease-in-out;
-}
-
-.nav-links ul li:hover {
-  transform: translate(0px, -2px);
-  transition: transform 0.2s ease-in-out;
-}
-
-
 
 .hero h1 {
   font-size: 3rem;
@@ -249,18 +231,10 @@ section#hero {
 /* Palette Switcher */
 .palette-switcher {
   display: flex;
-  gap: 16px;
-  z-index: 10;
-  
+  gap: 16px; /* 24px spacing between circles */
+  z-index: 10; /* Ensure it's above other content */
+  pointer-events: all;
 }
-
-.palette-switcher:hover {
-  display: flex;
-  width: auto;
-  gap: 16px;
- 
-}
-
 
 .circle {
   width: 32px;
@@ -268,8 +242,6 @@ section#hero {
   border-radius: 50%; /* Makes it a circle */
   cursor: pointer;
   border: 2px solid #fff; /* Optional border for better visibility */
-  pointer-events: all;
-  transition: transform 0.1s ease-in-out;
 }
 
 .circle:hover {
@@ -290,7 +262,7 @@ section#projects {
 }
 
 section {
-  padding: 80px var(--unit-1);
+  padding: var(--unit-1);
 }
 
 @media screen and (max-width: 768px) {
