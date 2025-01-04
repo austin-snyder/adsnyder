@@ -3,9 +3,9 @@
 
 /** PALETTES **/
 const palettes = {
-    yellow: ["#FF9506", "#F95808", "#FFEFE1", "#FFC00D", "#F6B845"],
-    blue: ["#4C9DF9", "#A2AAFF", "#D4E2FF", "#4CE0F5"],
-    purple: ["#D77CEE", "#FD82F7", "#FADAFF", "#CB2C85"],
+    yellow: ["#FFEFE1", "#FFC00D", "#FF9506", "#F95808",],
+    blue: ["#D4E2FF", "#A2AAFF", "#4C9DF9", "#4CE0F5"],
+    purple: ["#FADAFF", "#FD82F7", "#D77CEE", "#CB2C85"],
     green: ["#4CF9A3", "#AAFFA2", "#D4FFE8", "#29BB74"],
   };
   
@@ -15,7 +15,7 @@ const palettes = {
   const paletteSwitcher = document.querySelector(".palette-switcher");
   
   /** Game-of-Life + Gradient Parameters **/
-  let colorPalette = palettes.yellow; // default
+  let colorPalette = palettes.blue; // default
   let fadeSpeed = 0.05;
   let animationDelay = 100;
   let cols = 24;
@@ -30,6 +30,11 @@ const palettes = {
     const paletteKey = event.target.dataset.palette;
     if (paletteKey && palettes[paletteKey]) {
       colorPalette = palettes[paletteKey];
+
+       // Update the CSS variable directly
+    document.documentElement.style.setProperty('--color-palette-light', colorPalette[0]);
+    document.documentElement.style.setProperty('--color-palette-full', colorPalette[2]);
+
       // Re-generate gradients for each cell
       generateCellGradients();
       // Force a draw

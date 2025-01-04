@@ -11,7 +11,8 @@
 
   --hero-height: 20vh;
 
-  --color-palette-light: #FFEFE1;
+  --color-palette-light: #D4E2FF;
+  --color-palette-full: #A2AAFF;
   --color-palette-white: #FFFFFF;
 }
 
@@ -166,7 +167,7 @@ section#hero {
    section#hero {
     display: flex;
     flex-direction: row;
-    height: 40vh;
+    min-height: 50vh;
     justify-content: center;
     pointer-events: none;
     
@@ -176,31 +177,33 @@ section#hero {
 
 .hero-intro {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: start;
   text-align: left;
-  justify-content: space-between;
+ gap: 16px;
 }
 
-@media screen and (max-width: 768px) {
 
-   .hero-intro {
-     display: flex;
-     flex-direction: column;
-     align-items: start;
-     gap: 16px;
-   }
- }
 
 .navigation {
   position: relative;
   font-size: 1.4rem;
-  pointer-events: all;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.nav-links a:hover {
-  color: #6b6b6b;
+@media screen and (max-width: 768px) {
+
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 16px;
+  }
 }
+
 
 .nav-links a.active {
   font-weight: bold;
@@ -211,17 +214,32 @@ section#hero {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 24px;
   margin: 0;
-  padding: 0;
+  pointer-events: all;
   
 }
+
 
 .nav-links ul li a {
   text-decoration: none;
   color: var(--color-text-main);
   font-size: 18px;
+  background-color: var(--color-palette-light);
+  padding: 6px 12px;
+  border-radius: 8px;
 }
+
+.nav-links ul li {
+  transition: transform 0.2s ease-in-out;
+}
+
+.nav-links ul li:hover {
+  transform: translate(0px, -2px);
+  transition: transform 0.2s ease-in-out;
+}
+
+
 
 .hero h1 {
   font-size: 3rem;
@@ -231,10 +249,18 @@ section#hero {
 /* Palette Switcher */
 .palette-switcher {
   display: flex;
-  gap: 16px; /* 24px spacing between circles */
-  z-index: 10; /* Ensure it's above other content */
-  pointer-events: all;
+  gap: 16px;
+  z-index: 10;
+  
 }
+
+.palette-switcher:hover {
+  display: flex;
+  width: auto;
+  gap: 16px;
+ 
+}
+
 
 .circle {
   width: 32px;
@@ -242,6 +268,8 @@ section#hero {
   border-radius: 50%; /* Makes it a circle */
   cursor: pointer;
   border: 2px solid #fff; /* Optional border for better visibility */
+  pointer-events: all;
+  transition: transform 0.1s ease-in-out;
 }
 
 .circle:hover {
@@ -262,7 +290,7 @@ section#projects {
 }
 
 section {
-  padding: var(--unit-1);
+  padding: 80px var(--unit-1);
 }
 
 @media screen and (max-width: 768px) {
