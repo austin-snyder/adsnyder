@@ -213,7 +213,8 @@ section#hero {
 .nav-links ul {
   list-style: none;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: left;
   gap: 24px;
   margin: 0;
   pointer-events: all;
@@ -300,6 +301,17 @@ section {
 }
 
 
+
+.two-column-wrapper {
+display: flex;
+flex-direction: row;
+gap: 40px;
+}
+
+.left-content-container {
+  width: 25%;
+
+}
 
 
 
