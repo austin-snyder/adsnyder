@@ -1,6 +1,3 @@
-
-
-
 /** PALETTES **/
 const palettes = {
     yellow: ["#FFEFE1", "#FFC00D", "#FF9506", "#F95808",],
@@ -17,7 +14,7 @@ const palettes = {
   /** Game-of-Life + Gradient Parameters **/
   let colorPalette = palettes.blue; // default
   let fadeSpeed = 0.05;
-  let animationDelay = 100;
+  let animationDelay = 150;
   let cols = 24;
   let rowCount = 12;
   let cellWidth, cellHeight;
@@ -114,15 +111,50 @@ const palettes = {
   
     return gradient;
   }
+
+  /** Count Alive Cells */
+  function countAlive() {
+    let aliveCount = 0;
+    for (let row of grid) {
+      for (let cell of row) {
+        if (cell === 1) aliveCount++;
+      }
+    }
+    return aliveCount;
+  }
   
   /** Update the game of life logic */
   function updateGameOfLife() {
+
+    // CONTROLS HOW FAST GAME DIES
+    const aliveCount = countAlive();
+    const cellCount = rowCount * cols;
+    const alivePercentage = aliveCount / cellCount;
+    
+    // hard-coded values for calculating decay rate
+    const maximumLeniency = 1.00; // 0 thru 1; upper limit on leniency of life; increase for longer game
+    const minimumAlivePercentage = 0.03; // 0 thru 1; allows for infinite games in some scenarios, though requires maximumLeniency to be set to 1.00
+    const strictDecayRate = 20.00; // 0 thru 100; rate at which % chance for strict decay increases per % of cells alive
+
+    // calculates how strict the decay should be based on how many cells are alive
+    const leniency = Math.max(0,Math.min(maximumLeniency, (maximumLeniency - (Math.max(0,alivePercentage-minimumAlivePercentage) * strictDecayRate))));
+    const strictDecayChance = 100 - (leniency * 100);
+    const strictDecayRand = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+
+    // Debugging Purposes
+    console.log("Alive: " + String(Math.round(100 * aliveCount / cellCount)) + "% ; Chance of Strict Decay: " + Math.round(strictDecayChance) + "%.");
+    
     const nextGrid = grid.map((row, y) =>
       row.map((cell, x) => {
         const neighbors = countNeighbors(x, y);
         if (cell === 1) {
           // alive cell => becomes decay (2) if neighbors <2 or >2
-          return (neighbors < 2 || neighbors > 2) ? 2 : 1;
+          if (strictDecayRand >= strictDecayChance) {
+            return (neighbors < 2 || neighbors > 3) ? 2 : 1;
+          } else if (strictDecayRand < strictDecayChance) {
+            return (neighbors < 2 || neighbors > 2) ? 2 : 1;
+          }
+          
         }
         if (cell === 2) {
           // decay => becomes 0
@@ -194,6 +226,7 @@ const palettes = {
   }
   
   /** Periodic game-of-life logic updates */
+  // This interval determines how often the game updates
   setInterval(() => {
     updateGameOfLife();
     updateCells(); 
