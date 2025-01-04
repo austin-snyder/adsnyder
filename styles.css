@@ -180,10 +180,8 @@ section#hero {
   flex-direction: column;
   align-items: start;
   text-align: left;
- gap: 16px;
+  gap: 16px;
 }
-
-
 
 .navigation {
   position: relative;
@@ -204,7 +202,6 @@ section#hero {
   }
 }
 
-
 .nav-links a.active {
   font-weight: bold;
   text-decoration: underline;
@@ -223,21 +220,14 @@ section#hero {
   align-items: left;
   gap: 24px;
   margin: 0;
-  pointer-events: all;
-  
+  pointer-events: all;  
 }
-
 
 @media screen and (max-width: 768px) {
-
   .nav-links ul {
-
     flex-direction: row;
-
-    
   }
 }
-
 
 .nav-links ul li a {
   text-decoration: none;
@@ -257,8 +247,6 @@ section#hero {
   transition: transform 0.2s ease-in-out;
 }
 
-
-
 .hero h1 {
   font-size: 3rem;
   line-height: 1.2;
@@ -269,16 +257,14 @@ section#hero {
   display: flex;
   gap: 16px;
   z-index: 10;
-  
+
 }
 
 .palette-switcher:hover {
   display: flex;
   width: auto;
   gap: 16px;
- 
 }
-
 
 .circle {
   width: 32px;
