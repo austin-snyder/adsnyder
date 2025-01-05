@@ -224,3 +224,31 @@ window.grid = grid;
 window.cellWidth = cellWidth;
 window.unitHeight = cellHeight;  // The interaction script calls it unitHeight
 window.updateCells = updateCells; // So we can call updateCells() from interaction script if needed
+
+
+
+
+
+document.body.addEventListener('htmx:beforeSwap', (event) => {
+  const target = event.detail.target;
+
+  // Add animation class to the element being swapped out
+  target.classList.add('fade-slide-out');
+
+  // Wait for animation to finish
+  target.addEventListener('animationend', () => {
+    target.classList.remove('fade-slide-out');
+  }, { once: true });
+});
+
+document.body.addEventListener('htmx:afterSwap', (event) => {
+  const target = event.detail.target;
+
+  // Add animation class to the new content
+  target.classList.add('fade-slide-in');
+
+  // Remove animation class after animation ends
+  target.addEventListener('animationend', () => {
+    target.classList.remove('fade-slide-in');
+  }, { once: true });
+});
