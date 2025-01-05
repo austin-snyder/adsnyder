@@ -118,6 +118,7 @@ h1 {
 
 .content-wrapper {
   width: 100%;
+  display: grid;
 }
 
 
@@ -434,6 +435,7 @@ gap: 40px;
   color: var(--text-gray);
 }
 
+
 .project-tags-container {
   display: flex;
   width: 100%;
@@ -481,6 +483,9 @@ footer {
 }
 
 
-
+#case-studies {
+  font-size: 0.9rem;
+  gap: 120px;
+}
 
 
