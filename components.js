@@ -94,15 +94,23 @@ class ContentColumns extends HTMLElement {
 
     // Now we have an ordered list of items in the order attributes appeared.
     // Let's create elements for each item:
-    for (const item of items) {
+    for (const [index, item] of items.entries()) {
       let blockContainer;
-
+    
       if (item.type === 'image') {
         const ib = imageBlocks[item.n] || {};
         blockContainer = document.createElement('div');
-        blockContainer.classList.add('image-container');
+        blockContainer.classList.add('image-container', 'fade-slide-in');
         const span = parseInt(ib.span || '1', 10);
         blockContainer.style.gridColumn = `span ${span}`;
+    
+        // Add staggered transition delay
+        const transitionDelay = `${index * 1000}ms`; // 100ms delay per item
+        blockContainer.style.transitionDelay = transitionDelay;
+
+            // Log the delay for debugging
+    console.log(`Image block ${index}: transition-delay set to ${transitionDelay}`);
+
 
         // If image src is present
         if (ib.src) {
@@ -193,9 +201,13 @@ class ContentColumns extends HTMLElement {
         const tb = textBlocks[item.n] || {};
         if (tb.text) {
           blockContainer = document.createElement('div');
-          blockContainer.classList.add('text-container');
+          blockContainer.classList.add('text-container', 'fade-slide-in');
           const span = parseInt(tb.span || '1', 10);
           blockContainer.style.gridColumn = `span ${span}`;
+    
+          // Add staggered transition delay
+          const transitionDelay = `${index * 100}ms`; // 100ms delay per item
+          blockContainer.style.transitionDelay = transitionDelay;
       
           // Split text into paragraphs based on double newlines
           const paragraphs = tb.text.split('\n\n').map(paragraph => paragraph.trim());
@@ -211,14 +223,16 @@ class ContentColumns extends HTMLElement {
         }
       }
       
-
       else if (item.type === 'spacer') {
         const sb = spacerBlocks[item.n] || {};
-        // Just create an empty block
         blockContainer = document.createElement('div');
-        blockContainer.classList.add('spacer-container');
+        blockContainer.classList.add('spacer-container', 'fade-slide-in');
         const span = parseInt(sb.span || '1', 10);
         blockContainer.style.gridColumn = `span ${span}`;
+    
+        // Add staggered transition delay
+        const transitionDelay = `${index * 100}ms`; // 100ms delay per item
+        blockContainer.style.transitionDelay = transitionDelay;
 
         // You can style the spacer in CSS or leave it empty
         contentWrapper.appendChild(blockContainer);
@@ -226,6 +240,15 @@ class ContentColumns extends HTMLElement {
     }
 
     wrapper.appendChild(contentWrapper);
+
+    // Log the number of children
+console.log(`Total children in contentWrapper: ${contentWrapper.children.length}`);
+
+    // Trigger staggered animations
+requestAnimationFrame(() => {
+  const children = contentWrapper.querySelectorAll('.fade-slide-in');
+  children.forEach(child => child.classList.add('show'));
+});
 
     // Styles
     const style = document.createElement('style');
@@ -411,6 +434,8 @@ class ContentColumns extends HTMLElement {
     shadow.appendChild(style);
     shadow.appendChild(wrapper);
   }
+
+  
 
   // Helper to create a tag element
   _createTag(label, color) {

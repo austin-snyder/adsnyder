@@ -12,6 +12,7 @@
   --hero-height: 20vh;
 
   --color-palette-light: #D4E2FF;
+  --color-palette-2: #D4E2FF;
   --color-palette-full: #A2AAFF;
   --color-palette-white: #FFFFFF;
 }
@@ -363,10 +364,17 @@ gap: 40px;
   }
 }
 
-/* Classes to trigger animations */
 .fade-slide-in {
-  animation: fadeSlideIn 0.3s ease-in-out;
+  opacity: 0; /* Start hidden */
+  transform: translateY(20px); /* Start position */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Transition for opacity and position */
 }
+
+.fade-slide-in.show {
+  opacity: 1; /* End visible */
+  transform: translateY(0); /* End position */
+}
+
 
 .fade-slide-out {
   animation: fadeSlideOut 0.3s ease-in-out;
@@ -475,7 +483,7 @@ footer {
 }
 
 .footer-content {
-  height: 400px;
+  height: 100px;
   background-color: #f0f0f0;
   text-align: center;
   line-height: 400px;
@@ -484,8 +492,20 @@ footer {
 
 
 #case-studies {
-  font-size: 0.9rem;
+  font-size: 1rem;
   gap: 120px;
 }
 
 
+.case-studies-link-btn {
+  background-color: #FADAFF!important;
+  text-wrap: nowrap;
+}
+
+.horizontal-divider {
+  height: 2px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: var( --text-gray);
+  opacity: 0.2;
+}
