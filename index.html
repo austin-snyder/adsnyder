@@ -94,7 +94,10 @@ hx-target="#content">
   </section>
   <footer>
     <div class="footer-content-wrapper">
-      <div class="footer-content">
+      <div class="footer-content" id="footer"
+          hx-get="content/footer.html"
+          hx-trigger="load"
+          hx-target="#footer">
         <!-- ...existing code... -->
       </div>
     </div>
