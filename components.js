@@ -94,15 +94,23 @@ class ContentColumns extends HTMLElement {
 
     // Now we have an ordered list of items in the order attributes appeared.
     // Let's create elements for each item:
-    for (const item of items) {
+    for (const [index, item] of items.entries()) {
       let blockContainer;
-
+    
       if (item.type === 'image') {
         const ib = imageBlocks[item.n] || {};
         blockContainer = document.createElement('div');
-        blockContainer.classList.add('image-container');
+        blockContainer.classList.add('image-container', 'fade-slide-in');
         const span = parseInt(ib.span || '1', 10);
         blockContainer.style.gridColumn = `span ${span}`;
+    
+        // Add staggered transition delay
+        const transitionDelay = `${index * 1000}ms`; // 100ms delay per item
+        blockContainer.style.transitionDelay = transitionDelay;
+
+            // Log the delay for debugging
+    console.log(`Image block ${index}: transition-delay set to ${transitionDelay}`);
+
 
         // If image src is present
         if (ib.src) {
@@ -153,27 +161,38 @@ class ContentColumns extends HTMLElement {
         }
 
         // If caption is present
-        if (ib.caption) {
-          const caption = document.createElement('p');
-          caption.textContent = ib.caption;
-          caption.classList.add('image-caption');
-          blockContainer.appendChild(caption);
+          if (ib.caption) {
+            const captionContainer = document.createElement('div');
+            captionContainer.classList.add('caption-container');
 
-          // If link is also present
-          if (ib.link && ib['link-src']) {
-            const linkWrapper = document.createElement('p');
-            linkWrapper.classList.add('image-link');
+            // Split caption into paragraphs based on double newlines
+            const paragraphs = ib.caption.split('\n\n').map(paragraph => paragraph.trim());
 
-            const link = document.createElement('a');
-            link.href = ib['link-src'];
-            link.textContent = ib.link;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
+            paragraphs.forEach(paragraph => {
+              const p = document.createElement('p');
+              // Replace single newlines with <br> for within-paragraph line breaks
+              p.innerHTML = paragraph.replace(/\n/g, '<br>');
+              captionContainer.appendChild(p);
+            });
 
-            linkWrapper.appendChild(link);
-            blockContainer.appendChild(linkWrapper);
+            blockContainer.appendChild(captionContainer);
+
+            // If link is also present
+            if (ib.link && ib['link-src']) {
+              const linkWrapper = document.createElement('p');
+              linkWrapper.classList.add('image-link');
+
+              const link = document.createElement('a');
+              link.href = ib['link-src'];
+              link.textContent = ib.link;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+
+              linkWrapper.appendChild(link);
+              captionContainer.appendChild(linkWrapper);
+            }
           }
-        }
+
 
         contentWrapper.appendChild(blockContainer);
       }
@@ -182,24 +201,38 @@ class ContentColumns extends HTMLElement {
         const tb = textBlocks[item.n] || {};
         if (tb.text) {
           blockContainer = document.createElement('div');
-          blockContainer.classList.add('text-container');
+          blockContainer.classList.add('text-container', 'fade-slide-in');
           const span = parseInt(tb.span || '1', 10);
           blockContainer.style.gridColumn = `span ${span}`;
-
-          const p = document.createElement('p');
-          p.textContent = tb.text;
-          blockContainer.appendChild(p);
+    
+          // Add staggered transition delay
+          const transitionDelay = `${index * 100}ms`; // 100ms delay per item
+          blockContainer.style.transitionDelay = transitionDelay;
+      
+          // Split text into paragraphs based on double newlines
+          const paragraphs = tb.text.split('\n\n').map(paragraph => paragraph.trim());
+      
+          paragraphs.forEach(paragraph => {
+            const p = document.createElement('p');
+            // Replace single newlines with <br> for within-paragraph line breaks
+            p.innerHTML = paragraph.replace(/\n/g, '<br>');
+            blockContainer.appendChild(p);
+          });
+      
           contentWrapper.appendChild(blockContainer);
         }
       }
-
+      
       else if (item.type === 'spacer') {
         const sb = spacerBlocks[item.n] || {};
-        // Just create an empty block
         blockContainer = document.createElement('div');
-        blockContainer.classList.add('spacer-container');
+        blockContainer.classList.add('spacer-container', 'fade-slide-in');
         const span = parseInt(sb.span || '1', 10);
         blockContainer.style.gridColumn = `span ${span}`;
+    
+        // Add staggered transition delay
+        const transitionDelay = `${index * 100}ms`; // 100ms delay per item
+        blockContainer.style.transitionDelay = transitionDelay;
 
         // You can style the spacer in CSS or leave it empty
         contentWrapper.appendChild(blockContainer);
@@ -207,6 +240,15 @@ class ContentColumns extends HTMLElement {
     }
 
     wrapper.appendChild(contentWrapper);
+
+    // Log the number of children
+console.log(`Total children in contentWrapper: ${contentWrapper.children.length}`);
+
+    // Trigger staggered animations
+requestAnimationFrame(() => {
+  const children = contentWrapper.querySelectorAll('.fade-slide-in');
+  children.forEach(child => child.classList.add('show'));
+});
 
     // Styles
     const style = document.createElement('style');
@@ -240,27 +282,24 @@ class ContentColumns extends HTMLElement {
 
       .content-wrapper {
         display: grid;
-        grid-template-columns: repeat(${totalColumns}, 1fr);
+        grid-template-columns: repeat(${totalColumns}, minmax(0, 1fr));
         grid-gap: 60px 24px;
+        width: 100%;
       }
 
+      
 
-         @media (max-width: 1024px) {
-      .content-wrapper {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-      }
+
+@media (max-width: 600px) {
+  .content-wrapper {
+  display: grid;
+    grid-template-columns: 1fr; /* Single-column layout */
+    gap: 16px;
+    width: 100%; /* Ensure it spans the full viewport width */
+  }
 }
 
 
-      @media (max-width: 600px) {
-      .content-wrapper {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 16px;
-      }
-}
 
       .image-container {
         display: flex;
@@ -357,6 +396,7 @@ class ContentColumns extends HTMLElement {
       .text-container {
         display: flex;
         flex-direction: column;
+        gap: 8px;
       }
 
       .text-container p {
@@ -368,11 +408,34 @@ class ContentColumns extends HTMLElement {
       .spacer-container {
         /* A spacer block is empty by default, can be styled or left empty */
       }
+
+
+.caption-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.caption-container p {
+  margin: 0;
+  line-height: 1.6em;
+}
+
+.text-container,
+.image-container {
+  width: 100%; /* Allow grid to dictate the column width */
+  max-width: unset; /* Prevent any max-width from interfering */
+  flex: unset; /* Ensure no flexbox interference */
+}
+
+
     `;
 
     shadow.appendChild(style);
     shadow.appendChild(wrapper);
   }
+
+  
 
   // Helper to create a tag element
   _createTag(label, color) {
@@ -385,9 +448,9 @@ class ContentColumns extends HTMLElement {
 
   // Helper to determine tag color
   _getTagColor(tag, colors) {
-    if (['Data Simulation', 'Generation Modeling', 'Data Analysis'].includes(tag)) return colors.type;
+    if (['Data Simulation', 'Generation Modeling', 'Data Analysis', 'Data Analysis & Presentation'].includes(tag)) return colors.type;
     if (['Python', 'Perl', 'R', 'Fortran90', 'C++', 'Javascript'].includes(tag)) return colors.language;
-    if (['ArcGIS', 'Postman', 'Flask'].includes(tag)) return colors.software;
+    if (['ArcGIS', 'QGIS','Postman', 'Flask', 'PyTorch'].includes(tag)) return colors.software;
     return '#DDD'; // Default gray for unknown tags
   }
 }

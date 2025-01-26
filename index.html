@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>adsnyder</title>
+  <link rel="stylesheet" href="resets.css">
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/htmx.org"></script>
 
@@ -38,6 +39,8 @@
       <div class="left-content-container">
         <div class="nav-links">
           <ul>
+
+            <div style="display: flex; flex-direction: row; gap: 8px;">
             <li>
               <a href="projects.html"
                  hx-get="content/projects.html"
@@ -45,6 +48,12 @@
                  hx-push-url="false"
                  class="nav-link">Projects</a>
             </li>
+
+            <li>
+              <a class="case-studies-link-btn" href="case-studies.html"
+                 class="nav-link">all ↗</a>
+            </li>
+          </div>
             <li>
               <a href="experiments.html"
                  hx-get="content/experiments.html"
@@ -81,33 +90,14 @@ hx-target="#content">
 </div> <!-- close two-column container div-->
 
 
-<content-columns
-columns="4"
-
-headline="Portfolio-Scale Solar and Wind Production Forecasting and Simulation"
-
-image-2-tags="Generation Modeling, R, Perl, Fortran90"
-image-2-caption="Portfolio-Scale Solar and Wind Production Forecasting and Simulation.Grid integration simulation and forecasting for portfolios of wind and solar sites. Analysis focused on overall energy generation, monthly-diurnal grid impacts, and validation against local atmospheric trends."
-image-2-span="2"
-
-
-
-background-color="white"
-text-color="#2A2A2B"
-
-image-1-src="assets/project-card-thumbnail-bg.png"
-image-1-alt="Image 1"
-image-1-span="2"
-
->
-</content-columns>
-
-
 
   </section>
   <footer>
     <div class="footer-content-wrapper">
-      <div class="footer-content">
+      <div class="footer-content" id="footer"
+          hx-get="content/footer.html"
+          hx-trigger="load"
+          hx-target="#footer">
         <!-- ...existing code... -->
       </div>
     </div>
